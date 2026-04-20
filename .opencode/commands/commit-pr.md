@@ -6,6 +6,8 @@ model: opencode-go/qwen3.5-plus
 ---
 Usa la skill `fscu-commit-pr`.
 
+Si se invoca como `/commit-pr <rama>`, usa `$1` como nombre de la rama objetivo para hacer push y crear el PR. Si `$1` está vacío, usa la rama actual.
+
 Primero inspecciona el estado actual con:
 !`git status --short`
 !`git diff --stat`
