@@ -60,6 +60,7 @@ async def test_lookup_rut_with_utm_success(mock_db_session, mock_settings):
     with patch("app.services.rut_lookup.get_settings", return_value=mock_settings), \
          patch("app.services.rut_lookup.get_db_session") as mock_get_session, \
          patch("app.services.rut_lookup.fetch_utm_value") as mock_fetch, \
+         patch("app.services.rut_lookup.record_utm_latency") as mock_record_utm_latency, \
          patch("app.services.rut_lookup._get_utm_cache") as mock_cache_fn:
         mock_get_session.return_value.__aenter__.return_value = mock_db_session
 
@@ -80,6 +81,7 @@ async def test_lookup_rut_with_utm_success(mock_db_session, mock_settings):
     assert result.monto_utm == 150.5
     assert result.monto_clp == 9030000.0
     assert result.utm_fecha == "2025-03"
+    mock_record_utm_latency.assert_called_once()
 
 
 @pytest.mark.asyncio
