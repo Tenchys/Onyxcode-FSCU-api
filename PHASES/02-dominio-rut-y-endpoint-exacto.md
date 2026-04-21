@@ -61,3 +61,16 @@
 - `pruebas_unitarias`: `404/405 para intentos de listado y ausencia de query params de búsqueda parcial.`
 - `respuesta_esperada`: `La API mantiene únicamente consulta exacta por path param.`
 - `criterio_de_listo`: `No hay superficie accidental para scraping por listados.`
+
+## Cierre de fase
+
+- `estado`: completada
+- `fecha`: 2026-04-20
+- `resumen`: Implementado módulo `app/domain/rut.py` con validador/normalizador de RUT chileno (algoritmo DV estándar), schema `DeudaReponse` en `app/api/v1/schemas_rut.py`, endpoint `GET /v1/rut/{rut}` con validación temprana en `app/api/v1/rut.py`, y pruebas negativas blindando el contrato contra listados/búsquedas parciales. Las 4 tareas de la fase fueron completadas; el endpoint está funcional con respuesta placeholder (found=false) hasta que F03 implemente el repositorio.
+- `pruebas_ejecutadas`:
+  - `tests/domain/test_rut.py` — 21 tests (parseo, normalización, cálculo DV, casos válidos/inválidos)
+  - `tests/api/test_rut_response_schema.py` — 6 tests (contrato de respuesta)
+  - `tests/api/test_rut_endpoint_validation.py` — 16 tests (validación 4xx, estructura de respuesta)
+  - `tests/api/test_no_massive_or_partial_search.py` — 8 tests (blindaje contra listados/métodos no permitidos)
+- `resultado`: exitoso
+- `pendientes`: ninguna
