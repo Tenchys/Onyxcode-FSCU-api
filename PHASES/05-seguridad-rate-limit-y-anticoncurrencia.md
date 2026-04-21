@@ -70,3 +70,17 @@
 - `pruebas_unitarias`: `Verificar presencia de campos mínimos en logs de bloqueo.`
 - `respuesta_esperada`: `Cada rechazo antiabuso queda trazable para operación.`
 - `criterio_de_listo`: `Logs listos para observabilidad y auditoría mínima.`
+
+## Cierre de fase
+
+- `estado`: completada
+- `fecha`: 2026-04-21
+- `resumen`: Implementados controles antiabuso: rate limit por IP (middleware), rate limit por RUT normalizado, límite global de concurrencia con semáforo asíncrono, y logging estructurado para eventos de seguridad.
+- `pruebas_ejecutadas`:
+  - `test_rate_limit_ip.py`: IP allowed/blocked/independent
+  - `test_rate_limit_rut.py`: RUT allowed/blocked/independent
+  - `test_concurrency_guard.py`: allows within limit, blocks at limit
+  - `test_abuse_logging.py`: estructura de log de seguridad
+  - `142 tests passed (full suite)`
+- `resultado`: exitoso
+- `pendientes`: ninguna

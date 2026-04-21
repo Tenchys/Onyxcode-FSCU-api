@@ -15,6 +15,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             400: "BAD_REQUEST",
             404: "NOT_FOUND",
             429: "RATE_LIMIT_EXCEEDED",
+            503: "CONCURRENCY_LIMIT_EXCEEDED",
             500: "INTERNAL_ERROR",
         }
         code = code_map.get(exc.status_code, "HTTP_ERROR")
