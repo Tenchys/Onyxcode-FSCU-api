@@ -6,6 +6,7 @@ Repositorio para una API pública en FastAPI + Postgres que permite buscar un RU
 - Priorizar seguridad, consultas exactas y respuestas mínimas.
 - Evitar búsquedas parciales, listados masivos y SQL dinámico.
 - Controlar concurrencia, rate limit y timeouts.
+- Implementar solo una fase por ejecución; no avanzar ni mezclar fases futuras.
 
 ## Contexto
 - `CONTEXT/00-overview.md`
