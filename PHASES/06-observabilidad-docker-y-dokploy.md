@@ -69,3 +69,18 @@
 - `pruebas_unitarias`: `Suite smoke cubre checklist de publicación y estados esperados.`
 - `respuesta_esperada`: `Existe puerta de calidad objetiva previa a producción.`
 - `criterio_de_listo`: `Checklist automatizable y documentación de operación vigente.`
+
+## Cierre de fase
+
+- `estado`: completada
+- `fecha`: 2026-04-21
+- `resumen`: Se implementó logging estructurado JSON (`app/core/logging.py`, `app/core/middleware.py`), métricas de latencia y status code (`app/observability/metrics.py`), Dockerfile y docker-compose.yml con healthchecks, documentación operativa (`README.md`, `docs/operacion.md`) y suite smoke covering pre-release checklist. Todas las pruebas unitarias pasan (206 passed).
+- `pruebas_ejecutadas`:
+  - `tests/observability/test_structured_logging.py` — 11 passed
+  - `tests/observability/test_metrics_collection.py` — 9 passed
+  - `tests/deploy/test_compose_config.py` — 21 passed
+  - `tests/smoke/test_pre_release_checklist.py` — 18 passed
+  - `tests/security/test_abuse_logging.py` — 4 passed (corregido para nuevo esquema JSON)
+  - `tests/` — 206 passed en suite completa
+- `resultado`: exitoso
+- `pendientes`: ninguna

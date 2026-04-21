@@ -30,19 +30,22 @@ from app.security.rate_limit import _RUT_COUNTER, check_rut_rate_limit
     ],
 )
 def test_log_security_event_fields(event_type, client_ip, normalized_rut, reason, latency_ms):
-    """Security log should contain all required fields."""
-    with patch.object(logging.getLogger("app.core.logging"), "warning") as mock_log:
+    """Security log should contain all required fields via structured JSON extra."""
+    with patch.object(logging.getLogger("app.security"), "warning") as mock_log:
         log_security_event(event_type, client_ip, normalized_rut, reason, latency_ms)
         mock_log.assert_called_once()
         call_args = mock_log.call_args
-        # call_args[0] is the positional args tuple; [0][0] is the format string
-        format_str = call_args[0][0]
-        assert "security_event" in format_str
-        assert "type=" in format_str
-        assert "ip=" in format_str
-        assert "rut=" in format_str
-        assert "reason=" in format_str
-        assert "latency_ms=" in format_str
+        # call_args[1] is the kwargs dict when using mock_log.warning(msg, extra={...})
+        # In Python logging with extra={}, the extra dict is attached to the LogRecord
+        # as the 'extra' attribute; we verify it contains the expected fields.
+        _, kwargs = call_args
+        extra = kwargs.get("extra", {})
+        assert extra.get("event_type") == event_type
+        assert extra.get("client_ip") == (client_ip or "unknown")
+        assert extra.get("normalized_rut") == (normalized_rut or "N/A")
+        assert extra.get("reason") == reason
+        if latency_ms is not None:
+            assert extra.get("latency_ms") == latency_ms
 
 
 @pytest.mark.asyncio

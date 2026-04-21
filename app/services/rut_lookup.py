@@ -1,11 +1,13 @@
 """RUT lookup orchestration service."""
 import logging
+import time
 from dataclasses import dataclass
 from typing import Tuple
 
 from app.core.settings import get_settings
 from app.db.postgres import get_db_session
 from app.integrations.utm_client import UtmValue, fetch_utm_value
+from app.observability.metrics import record_utm_latency
 from app.repositories.deudores_repo import DeudorRecord, find_deudor_by_rut
 from app.services.money import utm_to_clp
 from app.services.utm_cache import UtmCache
@@ -64,7 +66,9 @@ async def _fetch_utm_with_cache() -> Tuple[UtmValue, bool]:
         return cached_value, True
 
     # Missing/expired cache — force remote revalidation
+    start = time.perf_counter()
     result = await fetch_utm_value()
+    record_utm_latency((time.perf_counter() - start) * 1000)
     if result.success and result.value is not None:
         cache.set(result.value)
         return result.value, True
