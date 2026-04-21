@@ -84,3 +84,20 @@ def test_error_contract_500(app_with_handlers: FastAPI) -> None:
     error = data["error"]
     assert error["code"] == "INTERNAL_ERROR"
     assert "message" in error
+
+
+def test_error_contract_503(app_with_handlers: FastAPI) -> None:
+    """503 Concurrency saturation returns standard error contract."""
+
+    @app_with_handlers.get("/overloaded")
+    def raise_overloaded():
+        raise HTTPException(status_code=503, detail="Service temporarily overloaded. Please retry.")
+
+    client = TestClient(app_with_handlers, raise_server_exceptions=False)
+    response = client.get("/overloaded")
+
+    assert response.status_code == 503
+    data = response.json()
+    assert data["status"] == "error"
+    error = data["error"]
+    assert error["code"] == "CONCURRENCY_LIMIT_EXCEEDED"
