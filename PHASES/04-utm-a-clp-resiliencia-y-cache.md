@@ -65,3 +65,17 @@
 - `pruebas_unitarias`: `Éxito completo, fallback con caché, error cuando no hay caché disponible.`
 - `respuesta_esperada`: `Endpoint siempre responde campos esperados o error controlado según reglas.`
 - `criterio_de_listo`: `Integración UTM operativa con degradación segura.`
+
+## Cierre de fase
+
+- `estado`: completada
+- `fecha`: 2026-04-21
+- `resumen`: Se implementaron 4 tareas de la fase F04: cliente HTTP de UTM con timeout y parseo defensivo, caché TTL con fallback al último valor válido, conversor Decimal para UTM→CLP sin errores de precisión binaria, e integración en rut_lookup.py que añade monto_clp y utm_fecha a la respuesta del endpoint. El endpoint degrada de forma controlada cuando la API externa falla y no hay caché disponible.
+- `pruebas_ejecutadas`:
+  - tests/integrations/test_utm_client.py (5 tests: éxito, timeout, error HTTP, payload malformado con/m sin campos)
+  - tests/services/test_utm_cache.py (6 tests: miss vacío, hit fresco, expiración con/sin fallback, actualización fallback, clear)
+  - tests/services/test_money_conversion.py (10 tests: conversión básica, fraccional, grande, redondeo half-up, casos de error, precisión binaria, decimal)
+  - tests/services/test_rut_lookup_with_utm.py (4 tests: éxito completo, fallback con caché, sin caché ni fallback, deudor no encontrado)
+  - tests/services/test_rut_lookup_service.py (4 tests adaptados a nueva firma con mock de UTM)
+- `resultado`: exitoso
+- `pendientes`: ninguna

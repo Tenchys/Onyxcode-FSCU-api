@@ -3,7 +3,12 @@ from fastapi import APIRouter, HTTPException, Path, status
 
 from app.api.v1.schemas_rut import DeudaResponse
 from app.domain.rut import parse_rut
-from app.services.rut_lookup import DatabaseError, LookupResult, lookup_rut as lookup_rut_service
+from app.services.rut_lookup import (
+    DatabaseError,
+    LookupResult,
+    UtmUnavailableError,
+    lookup_rut as lookup_rut_service,
+)
 
 router = APIRouter(tags=["rut"])
 
@@ -37,7 +42,7 @@ async def lookup_rut(
     # F03 — integrate service to fetch real data
     try:
         result: LookupResult = await lookup_rut_service(rut=rut_info.rut, dv=rut_info.dv)
-    except DatabaseError:
+    except (DatabaseError, UtmUnavailableError):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Internal server error.",
@@ -56,4 +61,6 @@ async def lookup_rut(
         nombre=result.nombre,
         universidad=result.universidad,
         monto_utm=result.monto_utm,
+        monto_clp=result.monto_clp,
+        utm_fecha=result.utm_fecha,
     )
