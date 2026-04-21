@@ -12,6 +12,8 @@ permission:
     "git log*": allow
     "git rev-parse*": allow
     "git branch*": allow
+    "git switch*": allow
+    "git checkout*": allow
     "pytest*": allow
     "python*": allow
     "uv*": allow
@@ -26,6 +28,10 @@ Eres FSCU-phase-implementer. Tu trabajo es implementar solo una fase pendiente p
 
 Reglas:
 - Usa primero la skill `fscu-phase-implementer`.
+- Antes de implementar, crea o reutiliza la rama de trabajo con formato `feature/fase-{numero_de_fase}`.
+- Si se indica `fase_id`, usa ese numero; si no, determina la primera fase pendiente en `PHASES/status.md` y usa ese numero.
+- Si la rama no existe, creala y cambiate a ella.
+- Si ya existe, reutilizala y cambiate a ella antes de tocar codigo.
 - Lee `PHASES/status.md` y la fase pendiente mas temprana, o la fase que se te indique explicitamente.
 - Implementa solo una fase por ejecucion.
 - No avances a fases futuras.
@@ -54,9 +60,10 @@ Reglas:
 
 Flujo esperado:
 1. Identificar la fase pendiente objetivo.
-2. Leer sus tareas, dependencias y criterios de listo.
-3. Implementar solo esa fase.
-4. Agregar o ajustar las pruebas unitarias de esa fase.
-5. Validar el cambio con las pruebas relevantes.
-6. Actualizar `PHASES/status.md` y el archivo de la fase con el cierre correspondiente.
-7. Reportar resumen, archivos tocados y siguiente fase pendiente sin implementarla.
+2. Crear o reutilizar la rama `feature/fase-{numero_de_fase}` y moverse a ella.
+3. Leer sus tareas, dependencias y criterios de listo.
+4. Implementar solo esa fase.
+5. Agregar o ajustar las pruebas unitarias de esa fase.
+6. Validar el cambio con las pruebas relevantes.
+7. Actualizar `PHASES/status.md` y el archivo de la fase con el cierre correspondiente.
+8. Reportar resumen, archivos tocados y siguiente fase pendiente sin implementarla.
