@@ -94,6 +94,33 @@ class TestDockerComposeConfig:
         ports = str(api["ports"])
         assert "${APP_PORT" in ports or "8000" in ports
 
+    def test_postgres_init_script_mount_readonly(self):
+        """Postgres must mount SQL seed as read-only in /docker-entrypoint-initdb.d/."""
+        with open(COMPOSE_PATH) as f:
+            data = yaml.safe_load(f)
+        pg = data["services"]["postgres"]
+        assert "volumes" in pg, "postgres service must have volumes"
+        volumes = pg["volumes"]
+        # Find mount pointing to /docker-entrypoint-initdb.d/
+        init_mounts = [v for v in volumes if "/docker-entrypoint-initdb.d/" in v]
+        assert init_mounts, "postgres must have an init script mount in /docker-entrypoint-initdb.d/"
+        # Assert it's read-only (:ro suffix)
+        assert any(":ro" in m for m in init_mounts), "init script mount must be read-only (:ro)"
+        # Assert seed file exists in project
+        seed_path = PROJECT_ROOT / "SQL" / "deudores_morosos.sql"
+        assert seed_path.exists(), f"Seed file must exist at {seed_path}"
+
+    def test_postgres_persistent_volume_preserved(self):
+        """Postgres must preserve the named volume postgres_data for persistence."""
+        with open(COMPOSE_PATH) as f:
+            data = yaml.safe_load(f)
+        pg = data["services"]["postgres"]
+        assert "volumes" in pg
+        volumes = pg["volumes"]
+        # Must have postgres_data volume for persistence
+        assert any("postgres_data" in v for v in volumes), \
+            "postgres must keep postgres_data volume for persistence"
+
 
 class TestDockerfile:
     """Tests for Dockerfile structural validity."""

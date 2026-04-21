@@ -10,6 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./SQL/deudores_morosos.sql:/docker-entrypoint-initdb.d/01-deudores_morosos.sql:ro
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
