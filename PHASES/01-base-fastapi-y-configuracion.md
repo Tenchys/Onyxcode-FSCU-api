@@ -69,3 +69,24 @@
 - `pruebas_unitarias`: `test_request_timeout_returns_controlled_error cuando se supera tiempo límite.`
 - `respuesta_esperada`: `Peticiones lentas se cancelan con respuesta controlada sin colgar workers.`
 - `criterio_de_listo`: `Timeout de request activo y probado.`
+
+## Cierre de fase
+
+- `estado`: completada
+- `fecha`: 2026-04-20
+- `resumen`: Se implementó la base completa de FastAPI con estructura modular: app/main.py con factory create_app(), routers v1, endpoint /health, settings centralizados con validación pydantic, contratos de error estándar (400/404/429/500), middleware de timeout por request con 504 controlada y hooks de lifespan. Se agregaron 12 pruebas unitarias cubriendo todas las tareas de la fase.
+- `pruebas_ejecutadas`:
+  - `test_health_ok` → GET /v1/health devuelve 200 con payload {"status": "ok"}
+  - `test_settings_requires_db_url` → Settings falla si falta DATABASE_URL
+  - `test_settings_reject_invalid_rate_limits` → Settings rechaza rate limits > 1000
+  - `test_settings_accepts_valid_config` → Settings carga con config válida
+  - `test_settings_reject_invalid_log_level` → Settings rechaza nivel de log inválido
+  - `test_settings_default_values` → Valores por defecto seguros verificados
+  - `test_error_contract_400` → Error 400 sigue contrato
+  - `test_error_contract_404` → Error 404 sigue contrato
+  - `test_error_contract_429` → Error 429 sigue contrato
+  - `test_error_contract_500` → Error 500 sigue contrato
+  - `test_request_timeout_returns_controlled_error` → Request lento devuelve 504 controlada
+  - `test_fast_request_succeeds` → Request rápido completa dentro del timeout
+- `resultado`: exitoso
+- `pendientes`: ninguna
