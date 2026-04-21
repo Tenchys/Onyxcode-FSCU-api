@@ -8,6 +8,8 @@ Usa la skill `fscu-phase-implementer`.
 
 Si se invoca como `/implement-phase <fase_id>`, usa `$1` como fase objetivo. Si esta vacio, implementa la primera fase pendiente en `PHASES/status.md`.
 
+Antes de implementar, crea o reutiliza la rama `feature/fase-{numero_de_fase}` correspondiente y cambiate a ella.
+
 Tu trabajo es implementar solo una fase por ejecucion, con pruebas unitarias y sin avanzar a fases futuras.
 Al finalizar, actualiza el estado de la fase en `PHASES/status.md`.
 Si la fase termina, agrega un bloque de cierre en el archivo de la fase.
