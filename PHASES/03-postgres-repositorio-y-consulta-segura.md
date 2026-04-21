@@ -67,3 +67,18 @@
 - `pruebas_unitarias`: `404 no encontrado, 500 controlado ante excepción de infraestructura.`
 - `respuesta_esperada`: `Endpoint entrega resultado exacto o error según contrato.`
 - `criterio_de_listo`: `Flujo end-to-end exacto operativo con errores mapeados.`
+
+## Cierre de fase
+
+- `estado`: completada
+- `fecha`: 2026-04-20
+- `resumen`: Se implementó la conexión a Postgres con pool reducido y timeouts estrictos, el repositorio de deudores con consulta parametrizada exacta (rut+dv), el timeout a nivel de sesión SQL, y la orquestación completa endpoint→servicio→repositorio con manejo de 404 y 500 controlado. Se agregaron 23 pruebas unitarias nuevas y se actualizaron los tests existentes que dependían del comportamiento placeholder del endpoint.
+- `pruebas_ejecutadas`:
+  - tests/db/test_pool_config.py (4 tests)
+  - tests/db/test_statement_timeout.py (2 tests)
+  - tests/repositories/test_deudores_repo_exact_query.py (9 tests)
+  - tests/services/test_rut_lookup_service.py (3 tests)
+  - tests/api/test_rut_endpoint_404_500.py (5 tests)
+  - tests/api/test_rut_endpoint_validation.py (actualizados con mocks)
+- `resultado`: exitoso
+- `pendientes`: ninguna

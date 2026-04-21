@@ -1,8 +1,11 @@
 """Unit tests for RUT endpoint validation logic."""
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
+from app.services.rut_lookup import LookupResult
 
 
 @pytest.fixture
@@ -18,7 +21,7 @@ class TestRutEndpointValidation:
     @pytest.mark.parametrize(
         ("rut_input", "expected_status"),
         [
-            ("12.345.678-5", 200),  # valid format, placeholder (not found in DB yet)
+            ("12.345.678-5", 200),  # valid format, service returns not-found → 404
             ("12345678-5", 200),
             ("1000005-K", 200),  # 8-digit RUT with K as DV
             ("1000005k", 200),  # lowercase k
@@ -27,9 +30,18 @@ class TestRutEndpointValidation:
     def test_valid_rut_returns_200_or_found_false(
         self, client: TestClient, rut_input: str, expected_status: int
     ) -> None:
-        """Valid RUTs should not return 400 at the validation layer."""
-        response = client.get(f"/v1/rut/{rut_input}")
-        assert response.status_code == expected_status
+        """Valid RUTs should not return 400 at the validation layer.
+
+        Since we don't have a real DB in tests, the service is mocked to
+        return found=False so the endpoint returns 404 (not 200, which
+        would require an actual DB record). This matches the expected
+        behavior change: F03 replaced the placeholder with real lookup.
+        """
+        # Mock service to return not-found (matches old placeholder behavior)
+        mock_result = MagicMock(found=False, rut=12345678, dv="5")
+        with patch("app.api.v1.rut.lookup_rut_service", new=AsyncMock(return_value=mock_result)):
+            response = client.get(f"/v1/rut/{rut_input}")
+        assert response.status_code == 404  # not-found since mock returns found=False
 
     @pytest.mark.parametrize(
         ("rut_input", "expected_status"),
@@ -66,7 +78,18 @@ class TestRutEndpointValidation:
         self, client: TestClient, rut_input: str, expected_fields: list[str]
     ) -> None:
         """Response must contain at least found, rut, and dv."""
-        response = client.get(f"/v1/rut/{rut_input}")
+        # Mock service to return a found result so we test response shape
+        mock_result = LookupResult(
+            found=True,
+            rut=12345678,
+            dv="5",
+            nombre="JUAN PEREZ",
+            universidad="U. DE CHILE",
+            monto_utm=150.5,
+            cod_universidad=1,
+        )
+        with patch("app.api.v1.rut.lookup_rut_service", new=AsyncMock(return_value=mock_result)):
+            response = client.get(f"/v1/rut/{rut_input}")
         assert response.status_code == 200
         data = response.json()
         for field in expected_fields:
